@@ -3,8 +3,9 @@ import random
 
 class GridGame:
     def __init__(self):
-        self.running = False  # 반복문 상태를 추적하는 변수 추가
+        self.running = False  # 반복문 상태 추적 변수
         self.last_filled = []
+        
         # UI 생성
         self.window = tk.Tk()
         self.window.title("Grid Game")
@@ -34,7 +35,6 @@ class GridGame:
         # 새로운 'GridGameStop' 버튼 추가
         self.stop_button = tk.Button(self.window, text="GridGameStop", command=self.stop, state=tk.DISABLED)
         self.stop_button.place(relx=0.5, rely=0.9, anchor='center')
-
 
     def start_point_game(self):
         # 모든 버튼을 초기화
@@ -72,7 +72,7 @@ class GridGame:
                 if self.buttons[i][j]["text"] == "R" and (i, j) not in self.last_filled:
                     self.buttons[i][j].config(text="", bg="SystemButtonFace")
                     
-        # 모든 가능한 시작점과 방향을 구한다.
+        # 모든 가능한 시작점과 방향을 구한다
         starts_and_directions = []
         for direction in [(0, 1), (1, 0), (0, -1), (-1, 0)]:  # 오른쪽, 아래, 왼쪽, 위
             for i in range(8):
@@ -87,11 +87,11 @@ class GridGame:
                         if can_fill:
                             starts_and_directions.append((i, j, direction))
 
-        # 가능한 시작점과 방향 중에서 무작위로 하나를 선택한다.
+        # 가능한 시작점과 방향 중에서 무작위로 하나를 선택한다
         if starts_and_directions and self.running:  # 'running' 변수 확인
             start_i, start_j, direction = random.choice(starts_and_directions)
 
-            # 선택한 시작점에서 지정된 방향으로 3칸을 채운다.
+            # 선택한 시작점에서 지정된 방향으로 3칸을 채운다
             self.last_filled = []  # 최근에 채워진 격자 위치 초기화
             for k in range(3):
                 self.buttons[start_i][start_j].config(text="R", bg="red")
@@ -99,7 +99,7 @@ class GridGame:
                 start_i += direction[0]
                 start_j += direction[1]
                 
-            # 화면을 갱신하고, 0.01초 후에 함수를 다시 호출한다.
+            # 화면을 갱신하고, 0.01초 후에 함수를 다시 호출
             self.window.update_idletasks()
             self.window.after(10, self.start_random_game_iteratively)  # 500ms = 0.5 seconds
         else:
@@ -108,6 +108,6 @@ class GridGame:
     def run(self):
         self.window.mainloop()
 
-# Create and run the grid game
+# 실행
 game = GridGame()
 game.run()
