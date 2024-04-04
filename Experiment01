@@ -1,0 +1,24 @@
+import time
+import picamera
+import numpy as np
+from PIL import Image
+
+def capture_and_save_ccd_data(output_path):
+    with picamera.PiCamera() as camera:
+        # 해상도 및 기타 설정을 필요에 따라 조절할 수 있습니다.
+        camera.resolution = (1920, 1080)  # 예시 해상도 (Full HD)
+
+        # CCD 데이터를 받기 위해 numpy 배열로 캡처
+        raw_capture = np.empty((camera.resolution[1] * camera.resolution[0] * 3,), dtype=np.uint8)
+        camera.capture(raw_capture, 'rgb')
+
+        # numpy 배열을 이미지로 변환
+        image = Image.frombytes('RGB', camera.resolution, raw_capture)
+
+        # 이미지를 파일로 저장
+        image.save(output_path)
+
+if __name__ == "__main__":
+    output_file = "/path/to/your/image.jpg"  # 실제 경로로 변경
+
+    capture_and_save_ccd_data(output_file)
