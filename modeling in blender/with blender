@@ -1,0 +1,38 @@
+import bpy
+import bmesh
+
+def read_coordinates(file_path):
+    coordinates = []
+    with open(file_path, 'r') as file:
+        for line in file:
+            # 빈 줄 또는 형식이 맞지 않는 줄 건너뛰기
+            if not line.strip() or line.count(',') != 3:
+                continue
+            try:
+                # 괄호를 제거하고, 공백을 제거한 후, 쉼표로 나누어 숫자로 변환
+                x1, y1, x2, y2 = map(float, line.replace('(', '').replace(')', '').split(','))
+                # Z 좌표는 0으로 설정하고 모든 좌표에 0.01을 곱함
+                coordinates.append(((x1 * 0.01, y1 * 0.01, 0), (x2 * 0.01, y2 * 0.01, 0)))
+            except ValueError as e:
+                # 형식에 맞지 않는 데이터로 인한 변환 오류 처리
+                print(f"데이터 변환 오류: {e}, 줄: {line}")
+                continue
+    return coordinates
+
+def create_line_mesh(name, coordinates):
+    mesh = bpy.data.meshes.new(name)
+    obj = bpy.data.objects.new(name, mesh)
+    bpy.context.collection.objects.link(obj)
+    bm = bmesh.new()
+    for coord_pair in coordinates:
+        verts = [bm.verts.new(coord) for coord in coord_pair]
+        bm.edges.new(verts)
+    bm.to_mesh(mesh)
+    bm.free()
+
+def main():
+    file_path = "C:\\Users\\kangm\\Downloads\\raspberrypi\\pythonProject\\coordinates.txt"
+    coordinates = read_coordinates(file_path)
+    create_line_mesh("LineMesh", coordinates)
+
+main()
